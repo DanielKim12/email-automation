@@ -81,6 +81,9 @@ email-automation/
 To test sending now via cron, add this to `crontab -e`:
 ```bash
 * * * * * /usr/bin/python3 /full/path/to/main.py
+
+# 0 minutes, 9 am, 1st day of the month, every month, day of the week (5 stars)
+0 9 1 * * /usr/bin/python3 /full/path/to/main.py
 ```
 
 To send manually:
