@@ -4,6 +4,63 @@ A full-stack web application built with **Flask** for automating invoice emails 
 Ideal for freelancers, consultants, and small teams to automate recurring client billing and improve payment tracking.
 
 ---
+## 🖥️ Interface Preview
+
+### 🏠 Welcome Page (Before Login)
+
+This is the **landing screen** if you're not logged in:
+
+![Intro Page](assets/intro.png)
+
+- Click **Login** to access your dashboard if you're a returning user.
+- New users can **Register** and set up their SMTP settings.
+
+---
+
+### 📊 Dashboard (Main Screen After Login)
+
+Once you're logged in, you're directed to the **Invoice Dashboard**:
+
+![Dashboard](assets/dashboard.png)
+
+Here you can:
+
+- View total revenue, pending payments, and late fees
+- Add new clients or manage existing ones
+- See client status (Paid, Late, etc.)
+- Mark invoices as paid/unpaid or edit details
+
+---
+
+## ➕ Adding a New Client
+
+Click the **"Add New Client"** button from the dashboard.
+
+You'll see this form:
+
+![Add Client](assets/add-new-clients.png)
+
+Fill in:
+
+- **Client Name & Email**
+- **CC (Optional)**: For teammates or stakeholders
+- **Base Cost**
+- **Send Day**: Day of the month to send invoices
+- **Grace Period** & **Late Fee**
+- **Occupancy Duration**: Frequency of late fee (e.g., every day)
+
+> 💡 Duplicate emails are prevented. You'll get an error if the email already exists.
+
+---
+
+## 🔄 Managing Clients
+
+From the **Dashboard** or **"View All Clients"** page, you can:
+
+- ✅ Mark invoices as paid/unpaid
+- ✏️ Edit client details
+- 🗑️ Delete clients (if implemented)
+---
 
 ## ⚙️ Key Features
 
