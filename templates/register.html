@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Email Automation{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-user-plus"></i> Register</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('register') }}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="mt-4 mb-3">SMTP Server Settings</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="smtp_server" class="form-label">SMTP Server</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-server"></i></span>
+                                <input type="text" class="form-control" id="smtp_server" name="smtp_server" value="smtp.gmail.com" required>
+                            </div>
+                            <small class="form-text text-muted">Default: smtp.gmail.com</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="smtp_port" class="form-label">SMTP Port</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-network-wired"></i></span>
+                                <input type="number" class="form-control" id="smtp_port" name="smtp_port" value="587" required>
+                            </div>
+                            <small class="form-text text-muted">Default: 587 (TLS)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="smtp_username" class="form-label">SMTP Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="smtp_username" name="smtp_username" required>
+                            </div>
+                            <small class="form-text text-muted">Usually your email address</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="smtp_password" class="form-label">SMTP Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                <input type="password" class="form-control" id="smtp_password" name="smtp_password" required>
+                            </div>
+                            <small class="form-text text-muted">For Gmail, use an App Password</small>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle"></i> Important Note</h5>
+                        <p>If you're using Gmail, you'll need to create an App Password:</p>
+                        <ol>
+                            <li>Enable 2-Step Verification in your Google Account</li>
+                            <li>Go to Google Account > Security > App Passwords</li>
+                            <li>Generate a new App Password for this application</li>
+                            <li>Use that password in the SMTP Password field above</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <p class="mb-0">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,109 +1,207 @@
 # 📧 Email Invoice Automation with Late Fee Handling
 
-This is a Python-based email automation system that sends monthly invoices to clients and automatically applies late fees based on configurable grace periods and penalty frequencies.
-
-> Designed for freelancers, consultants, and small teams to automate recurring client billing and improve payment tracking.
-
----
-
-## ⚙️ Features
-
-- Auto-sends invoices on the **1st of each month**
-- Late fees applied after configurable grace period
-- Penalty amount and frequency customizable per client
-- Sends emails via **Gmail SMTP** with app password
-- UTF-8 safe (handles special characters and encoding issues)
-- Clean CSV-based client + credential storage
+A full-stack web application built with **Flask** for automating invoice emails with customizable late fees, grace periods, and scheduling.  
+Ideal for freelancers, consultants, and small teams to automate recurring client billing and improve payment tracking.
 
 ---
 
-## 🧩 Project Structure
+## ⚙️ Key Features
+
+- 🧑‍💼 **User Authentication**: Secure login & registration with SMTP email setup
+- 👥 **Client Management**: Add/edit/delete clients, track payment status
+- ⏰ **Automated Invoices**: Schedule invoices monthly on custom day/hour
+- 💸 **Late Fee System**: Custom grace period, frequency, and penalty per client
+- 📊 **Dashboard**: View client status, monthly revenue, and invoice history
+- 📬 **SMTP Integration**: Compatible with Gmail, Outlook, Yahoo, or custom SMTP
+- 🔄 **Recurring Invoicing**: Auto-resets unpaid status monthly
+- 🌐 **Responsive Design**: Works well on desktop and mobile devices (Bootstrap 5)
+
+---
+
+## 🗂️ Project Structure
+
 ```
 email-automation/
-├── main.py           # Core logic: reads client list, applies late fees, sends emails
-├── client.py         # Interactive script to add new clients into clients.csv
-├── clients.csv       # Stores client info (email, name, fees, message, etc.)
-├── user.csv          # Stores your own email + Gmail app password
-└── README.md         # You're reading it!
+├── app.py              # Main Flask app (routes, views, scheduling)
+├── main.py             # Handles sending invoice emails
+├── models.py           # SQLAlchemy models: User, Client, Revenue
+├── init_db.py          # One-time database initializer
+├── migrate_csv.py      # Legacy: migrate from CSV to DB
+├── templates/          # HTML templates (dashboard, auth, client forms)
+├── static/             # CSS/JS assets
+├── .env                # Environment variables (SMTP credentials, secrets)
+├── requirements.txt    # Python dependencies
+└── README.md           # This file
 ```
 
 ---
 
-## 🔁 Flow
+## 🚀 Getting Started
 
-1. You add a client using:
-   ```bash
-   python3 client.py
-   ```
+### ✅ Prerequisites
 
-2. `clients.csv` is updated with:
-   - Email, name, message, monthly fee
-   - Grace period, late fee amount, and recurrence
+- Python 3.8+
+- pip
+- Gmail App Password (or another SMTP-compatible email)
 
-3. On the 1st of every month (via cron or manual run), this command is triggered:
-   ```bash
-   python3 main.py
-   ```
+### 🔧 Installation
 
-4. It sends a personalized invoice and applies late fees if payment is overdue.
-
----
-
-## 🛠️ Setup Instructions
-
-1. **Install dependencies (Python 3 required)**:  
-   No external libraries needed — all standard libraries.
-
-2. **Set up Gmail App Password**:
-   - Visit https://myaccount.google.com/apppasswords
-   - Generate a 16-char password for "Mail"
-   - Save it in `user.csv` like so:
-
-     ```
-     email,password
-     your_email@gmail.com,app_password_here
-     ```
-
-3. **Add a client**:
-   ```bash
-   python3 client.py
-   ```
-
-4. **Run the invoice job manually (or via cron)**:
-   ```bash
-   python3 main.py
-   ```
-
----
-
-## 🧪 Testing
-
-To test sending now via cron, add this to `crontab -e`:
 ```bash
-* * * * * /usr/bin/python3 /full/path/to/main.py
+git clone https://github.com/yourusername/email-automation.git
+cd email-automation
 
-# 0 minutes, 9 am, 1st day of the month, every month, day of the week (5 stars)
-0 9 1 * * /usr/bin/python3 /full/path/to/main.py
+# Set up virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+cp .env.example .env
+# Then update .env with your SMTP config and secret key
 ```
 
-To send manually:
+### 🔄 Database Setup
+
 ```bash
-python3 main.py
+flask db init
+flask db migrate
+flask db upgrade
 ```
 
 ---
 
-## 🧭 To Do (Planned Features)
+## 💡 Usage
 
-- ✅ Attach PDF invoice
-- ✅ Dashboard to track payments
-- ✅ Stripe or PayPal integration
-- ✅ Client payment status
-- ✅ Auto-reminder before due date
+### 🔐 Register and Configure SMTP
+
+1. Open the app: [http://127.0.0.1:5000](http://127.0.0.1:5000)
+2. Sign up with your email and password
+3. Enter SMTP settings:
+   - **Gmail**: `smtp.gmail.com` and port `587`
+   - Use a **Google App Password** as your SMTP password
 
 ---
 
-## 🧑‍💻 Author
+### ➕ Add Clients
+
+1. Click “Add Client”
+2. Fill in:
+   - Name and email
+   - Monthly fee
+   - Invoice send day (1–28)
+   - Grace period (in days)
+   - Late fee amount
+   - Frequency of late fee (e.g., every 1 day)
+3. ✅ Emails must be unique per user
+4. Clients will be auto-added to monthly scheduler
+
+---
+
+### 📬 Invoice Scheduling
+
+- Invoices are sent automatically based on each client’s configuration
+- After the grace period, a late fee is applied on each recurrence (e.g., daily)
+- The client’s `is_paid` status resets every month to support recurring billing
+
+---
+
+## 🛠 Developer Testing
+
+To force-run invoices on every minute for testing, change this in `app.py`:
+
+```python
+CronTrigger(minute='*')  # For testing only
+```
+
+To reset `is_paid` every 1st of the month, APScheduler handles it with:
+
+```python
+scheduler.add_job(reset_client_payment_statuses, trigger='cron', day=1, hour=0)
+```
+
+---
+
+## 🔐 SMTP Configuration
+
+### Gmail:
+
+1. Enable 2-Step Verification
+2. Visit: https://myaccount.google.com/apppasswords
+3. Create an App Password for Mail
+4. Use it in your SMTP login credentials
+
+### Other Providers:
+
+| Provider     | SMTP Server           | Port |
+|--------------|------------------------|------|
+| Gmail        | smtp.gmail.com         | 587  |
+| Outlook      | smtp.office365.com     | 587  |
+| Yahoo        | smtp.mail.yahoo.com    | 587  |
+| Custom       | Your custom host       | Varies |
+
+---
+
+## 💻 Dashboard
+
+- Shows all clients for the logged-in user
+- Status indicators:
+  - ✅ Paid
+  - ❌ Unpaid
+  - ⚠️ Late (if past grace period)
+- View revenue totals and client statuses in real time
+
+---
+
+## 🧪 Testing Cron Jobs
+
+### Manual run:
+```bash
+python main.py
+```
+
+### Add to `crontab` for monthly:
+```bash
+0 9 1 * * /usr/bin/python3 /path/to/email-automation/main.py
+```
+
+---
+
+## 📌 Planned Features
+
+- [x] Dashboard & client overview
+- [x] SMTP + App password integration
+- [x] Per-client configuration
+- [x] Automated invoice email
+- [x] Late fee handling logic
+- [ ] PDF invoice attachments
+- [ ] Stripe/PayPal integrations
+- [ ] Client invoice view link
+- [ ] Payment reminder emails
+
+---
+
+## 👨‍💻 Author
 
 **Guk Il Kim**  
-[Email me](mailto:kimgukil2@gmail.com)
+📧 [kimgukil2@gmail.com](mailto:kimgukil2@gmail.com)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+
+## 🙌 Acknowledgments
+
+- [Flask](https://flask.palletsprojects.com/) – Python Web Framework  
+- [Bootstrap](https://getbootstrap.com/) – UI Components  
+- [APScheduler](https://apscheduler.readthedocs.io/) – Task Scheduling  
+- [Font Awesome](https://fontawesome.com/) – Icons
+
+``` 
+
+Let me know if you’d like a `deploy-to-EC2` or `Dockerfile` section next!

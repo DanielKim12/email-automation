@@ -1,0 +1,3 @@
+email,name,cc,cost,message,late_fee,grace_period,duration,send_date,payment_status,payment_date,is_late,created_at
+kimgukil2@gmail.com,guk il kim,,1500.0,,100.0,2,1,1,Paid,2025-04-21 17:50:28.185288,False,2025-04-21 17:47:38.658765
+kimgukil2@gmail.com,daniel,,100.0,,50.0,3,1,1,Pending,,False,2025-04-21 18:05:04.859799

@@ -11,7 +11,7 @@ from datetime import datetime
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 
-def load_credentials(filename="user.csv"):
+def load_credentials(filename="data/user.csv"):
     with open(filename, newline='') as file:
         reader = csv.DictReader(file)
         credentials = next(reader)
@@ -42,7 +42,10 @@ def apply_late_fees(original_cost, grace_days, occupancy_days, late_fee_amount, 
     return float(original_cost), ""
 
 def clean_hard(text):
+    if not text:
+        return ""
     return text.replace('\xa0', ' ').encode("utf-8", "ignore").decode("utf-8").strip()
+
 
 def send_invoice(email, name, cc, cost, message, sender_email, sender_password, late_fee_note, grace_deadline, late_fee_amount, occupancy_days):
     print("=== Starting email construction ===")
@@ -104,9 +107,9 @@ def clean(text):
         return ""
     return text.replace('\xa0', ' ').encode('utf-8', 'ignore').decode('utf-8').strip()
 
-def process_clients(filename="clients.csv"):
+def process_clients(filename="data/clients.csv"):
     invoice_sent_date = datetime(datetime.now().year, datetime.now().month, 1)
-    sender_email, sender_password = load_credentials("user.csv")
+    sender_email, sender_password = load_credentials("data/user.csv")
 
     with open(filename, newline='') as csvfile:
         reader = csv.DictReader(csvfile)

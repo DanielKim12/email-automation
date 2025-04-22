@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Email Automation{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-cog"></i> SMTP Settings</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('settings') }}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="smtp_server" class="form-label">SMTP Server</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-server"></i></span>
+                                <input type="text" class="form-control" id="smtp_server" name="smtp_server" value="{{ current_user.smtp_server }}" required>
+                            </div>
+                            <small class="form-text text-muted">Default: smtp.gmail.com</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="smtp_port" class="form-label">SMTP Port</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-network-wired"></i></span>
+                                <input type="number" class="form-control" id="smtp_port" name="smtp_port" value="{{ current_user.smtp_port }}" required>
+                            </div>
+                            <small class="form-text text-muted">Default: 587 (TLS)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="smtp_username" class="form-label">SMTP Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="smtp_username" name="smtp_username" value="{{ current_user.smtp_username }}" required>
+                            </div>
+                            <small class="form-text text-muted">Usually your email address</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="smtp_password" class="form-label">SMTP Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                <input type="password" class="form-control" id="smtp_password" name="smtp_password" placeholder="Leave blank to keep current password">
+                            </div>
+                            <small class="form-text text-muted">For Gmail, use an App Password</small>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle"></i> Important Note</h5>
+                        <p>If you're using Gmail, you'll need to create an App Password:</p>
+                        <ol>
+                            <li>Enable 2-Step Verification in your Google Account</li>
+                            <li>Go to Google Account > Security > App Passwords</li>
+                            <li>Generate a new App Password for this application</li>
+                            <li>Use that password in the SMTP Password field above</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
