@@ -20,13 +20,14 @@ def load_credentials(filename="data/user.csv"):
 def apply_late_fees(original_cost, grace_days, occupancy_days, late_fee_amount, invoice_sent_date):
     now = datetime.now()
     grace_deadline = invoice_sent_date + timedelta(days=grace_days, hours=23, minutes=59)
+    resend = False
     late_fee_info = ""
 
     if now > grace_deadline:
         overdue_days = (now - grace_deadline).days
         periods_overdue = overdue_days // occupancy_days
         additional_fees = periods_overdue * late_fee_amount
-        final_cost = float(original_cost) + additional_fees
+        resend = overdue_days % occupancy_days == 0
 
         if periods_overdue > 0:
             late_fee_info = (
@@ -36,10 +37,11 @@ def apply_late_fees(original_cost, grace_days, occupancy_days, late_fee_amount, 
                 f"- Applied every {occupancy_days} day(s)\n"
                 f"- Total late fees: ${additional_fees:.2f}\n"
             )
+        return float(original_cost), late_fee_info, resend, grace_deadline
 
-        return final_cost, late_fee_info
+    return float(original_cost), "", False, grace_deadline
 
-    return float(original_cost), ""
+
 
 def clean_hard(text):
     if not text:
@@ -122,10 +124,12 @@ def process_clients(filename="data/clients.csv"):
             grace_period = int(clean(row.get("grace_period", 3)))
             occupancy = int(clean(row.get("duration", 1)))
             late_fee_amount = float(clean(row.get("late_fee", 50))) # if late fees not set then $50 default
+            final_cost, late_fee_note, resend, grace_deadline = apply_late_fees(
+            base_cost, grace_period, occupancy, late_fee_amount, invoice_sent_date
+        )
 
-            final_cost, late_fee_note = apply_late_fees(base_cost, grace_period, occupancy, late_fee_amount, invoice_sent_date)
-            grace_deadline = invoice_sent_date + timedelta(days=grace_period, hours=23, minutes=59)
-
+        is_initial_day = datetime.now().day == invoice_sent_date.day
+        if is_initial_day or resend:
             send_invoice(
                 email, name, cc,
                 final_cost, message,

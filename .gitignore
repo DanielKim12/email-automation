@@ -49,4 +49,5 @@ clients.db
 /data
 
 /data/
+.DS_Store
 
